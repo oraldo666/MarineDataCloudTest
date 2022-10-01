@@ -7,17 +7,19 @@ import loadingGif from "../assets/Loading_2.gif";
 import { FORM_DATA_POST } from "../constants/constants";
 
 function FormComponent({ dynamicForm, formLoaded }) {
+  //State for form input values
   const [formDataInput, setFormDataInputs] = useState({
     person_name: "",
     country: "",
   });
 
+  //State for form validations.
   const [loading, setLoading] = useState(false);
   const [fieldsValidate, setFieldsValidate] = useState("");
   const [errors, setErrors] = useState(null);
-
   const [formPost, setFormPost] = useState(false);
 
+  //In this function we handle the form data inputs.
   const handleInputCHange = (e) => {
     setFormDataInputs({
       ...formDataInput,
@@ -25,6 +27,7 @@ function FormComponent({ dynamicForm, formLoaded }) {
     });
   };
 
+  //Based on data we get from API endpint we create the dynamic form
   const formInputs = dynamicForm.form_inputs?.map((fInput) => {
     if (
       fInput.type === "text" ||
@@ -95,6 +98,7 @@ function FormComponent({ dynamicForm, formLoaded }) {
     }
   });
 
+  //Here we handle the form submission and the response  from the server.
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -108,10 +112,8 @@ function FormComponent({ dynamicForm, formLoaded }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ data: { form_inputs: { formDataInput } } }),
-        // body: JSON.stringify({ data: { formDataInput } }),
       })
         .then((response) => {
-          console.log(response);
           if (response.ok) {
             setErrors(null);
             setLoading(false);
@@ -134,7 +136,6 @@ function FormComponent({ dynamicForm, formLoaded }) {
         })
         .catch((error) => {
           setLoading(false);
-          console.log(error);
         });
     }
   };
@@ -157,13 +158,17 @@ function FormComponent({ dynamicForm, formLoaded }) {
 
           <form onSubmit={handleSubmit}>
             {formInputs}
-            <button
-              disabled={loading ? true : false}
-              className="button-5"
-              type="submit"
-            >
-              Save
-            </button>
+
+            {loading ? (
+              <button className="button-5" type="submit" disabled>
+                Save
+              </button>
+            ) : (
+              <button className="button-5" type="submit">
+                Save
+              </button>
+            )}
+
             {loading ? (
               <img src={loadingGif} alt="" className="loading-gif" />
             ) : (

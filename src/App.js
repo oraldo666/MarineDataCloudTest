@@ -8,6 +8,7 @@ function App() {
   const [dynamicForm, setDynamicForm] = useState([]);
   const [formLoaded, setFormLoaded] = useState(true);
 
+  //Rendering form inputs from API endpoint.
   useEffect(() => {
     fetch(DYNAMIC_FORM_DATA)
       .then((response) => {
@@ -18,11 +19,11 @@ function App() {
         }
       })
       .then((res) => {
-        console.log(res.data.attributes.config);
         setDynamicForm(res.data.attributes.config);
       });
   }, []);
 
+  //Then we pass the form data as props to FormComponent 
   return (
     <div className="form-container">
       <FormComponent dynamicForm={dynamicForm} formLoaded={formLoaded} />
