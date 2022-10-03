@@ -45,7 +45,7 @@ function FormComponent({ dynamicForm, formLoaded }) {
             readOnly={fInput.readonly}
             multiple={fInput.multiple}
             name={fInput.name}
-            value={formDataInput.person_name}
+            value={formDataInput.name}
             required={fInput.rules.split("|")[0]}
             minLength={fInput.rules.split("min:")[1].charAt(0)}
             maxLength={fInput.rules.split("max:")[1]}
@@ -65,7 +65,7 @@ function FormComponent({ dynamicForm, formLoaded }) {
             name={fInput.name}
             placeholder={fInput.placeholder}
             readOnly={fInput.readonly}
-            value={formDataInput.country}
+            value={formDataInput.name}
             required={fInput.rules.split("|")[0]}
             minLength={fInput.rules.split("min:")[1].charAt(0)}
             maxLength={fInput.rules.split("max:")[1]}
@@ -75,8 +75,8 @@ function FormComponent({ dynamicForm, formLoaded }) {
             <option
               value=""
               disabled
-              // selected
-              // hidden
+              selected
+              hidden
               className="select-placeholder"
             >
               {fInput.placeholder}
@@ -103,6 +103,13 @@ function FormComponent({ dynamicForm, formLoaded }) {
     e.preventDefault();
     setLoading(true);
 
+    const emptyFormData = Object.keys(formDataInput).reduce(
+      (accumulator, key) => {
+        return { ...accumulator, [key]: "" };
+      },
+      {}
+    );
+
     if (!formDataInput.person_name || !formDataInput.country) {
       setFieldsValidate("Please fill out the form fields!");
     } else {
@@ -118,10 +125,12 @@ function FormComponent({ dynamicForm, formLoaded }) {
             setErrors(null);
             setLoading(false);
             setFormPost(true);
+
+            console.log(emptyFormData);
+
             setFormDataInputs({
               ...formDataInput,
-              person_name: "",
-              country: "",
+              ...emptyFormData,
             });
             return response.json();
           } else if (!response.ok) {
@@ -138,6 +147,8 @@ function FormComponent({ dynamicForm, formLoaded }) {
           setLoading(false);
         });
     }
+
+    setLoading(false);
   };
 
   return (
